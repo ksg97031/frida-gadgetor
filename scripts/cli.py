@@ -189,7 +189,7 @@ def modify_manifest(decompiled_path):
                             ':extractNativeLibs="true"')
     android_manifest.write_text(txt, encoding="utf-8")
 
-def inject_gadget_into_apk(apk_path:str, arch:str, decompiled_path:str, main_activity:str = None, config:str = None):
+def inject_gadget_into_apk(apk_path:str, arch:str, decompiled_path:str, no_res, main_activity:str = None, config:str = None):
     """Inject frida gadget into an APK
 
     Args:
@@ -217,8 +217,9 @@ def inject_gadget_into_apk(apk_path:str, arch:str, decompiled_path:str, main_act
                         "Please specify the main activity using the --main-activity option.\n"
                         "Select the activity from %s", apk.get_activities())
             sys.exit(-1)
-    # Apply permission to android manifest
-    modify_manifest(decompiled_path)
+    if not no_res:
+        # Apply permission to android manifest
+        modify_manifest(decompiled_path)
 
     # Search the main activity from smali files
     load_library_name = gadget_name[:-3]
@@ -337,7 +338,7 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
             sys.exit(-1)
 
     # Process if decompile is success
-    inject_gadget_into_apk(apk_path, arch, decompiled_path, main_activity, config)
+    inject_gadget_into_apk(apk_path, arch, decompiled_path, no_res, main_activity, config)
 
     # Rebuild with apktool, print apk_path if process is success
     if not skip_recompile:
