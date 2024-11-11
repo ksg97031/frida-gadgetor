@@ -327,7 +327,10 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
         decompiled_path.mkdir()
 
         # APK decompile with apktool
-        run_apktool(['d', '-o', str(decompiled_path.resolve()), '-f'], str(apk_path.resolve()))
+        decompile_option = ['d', '-o', str(decompiled_path.resolve()), '-f']
+        if no_res:
+            decompile_option += ['--no-res']
+        run_apktool(decompile_option, str(apk_path.resolve()))
     else:
         if not decompiled_path.exists():
             logger.error("Decompiled directory not found: %s", decompiled_path)
@@ -343,8 +346,6 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
         recompile_option = ['b']
         if use_aapt2:
             recompile_option += ['--use-aapt2']
-        if no_res:
-            recompile_option += ['--no-res']
 
         run_apktool(recompile_option, str(decompiled_path.resolve()))
         apk_path = decompiled_path.joinpath('dist', apk_path.name)
