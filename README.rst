@@ -80,7 +80,7 @@ How do I begin?
 
     $ frida-gadget handtrackinggpu.apk --sign
       [INFO] Auto-detected frida version: 16.1.3
-      [INFO] APK: '[REDACTED]\demo-apk\handtrackinggpu.apk'
+      [INFO] APK: '[REDACTED]/demo-apk/handtrackinggpu.apk'
       [INFO] Auto-detected architecture via ADB: arm64-v8a # Alternatively, specify the architecture with --arch arm64
       [INFO] Gadget Architecture(--arch): arm64(default)
       [DEBUG] Decompiling the target APK using apktool
@@ -88,17 +88,17 @@ How do I begin?
       [DEBUG] Checking internet permission and extractNativeLibs settings
       [DEBUG] Adding 'android.permission.INTERNET' permission to AndroidManifest.xml
       [DEBUG] Searching for the main activity in the smali files
-      [DEBUG] Found the main activity at '[REDACTED]\frida-gadget\tests\demo-apk\handtrackinggpu\smali\com\google\mediapipe\apps\handtrackinggpu\MainActivity.smali'
+      [DEBUG] Found the main activity at '[REDACTED]/frida-gadget/tests/demo-apk/handtrackinggpu/smali/com/google/mediapipe/apps/handtrackinggpu/MainActivity.smali'
       [DEBUG] Locating the onCreate method and injecting the loadLibrary code
       [DEBUG] Recompiling the new APK using apktool
       ...
       I: Building apk file...
       I: Copying unknown files/dir...
-      I: Built apk into: [REDACTED]\demo-apk\handtrackinggpu\dist\handtrackinggpu.apk
+      I: Built apk into: [REDACTED]/demo-apk/handtrackinggpu/dist/handtrackinggpu.apk
       [INFO] Success
       ...
       
-    $ unzip -l [REDACTED]\demo-apk\handtrackinggpu\dist\handtrackinggpu.apk | grep libfrida-gadget
+    $ unzip -l [REDACTED]/demo-apk/handtrackinggpu/dist/handtrackinggpu.apk | grep libfrida-gadget
       21133848  09-15-2021 02:28   lib/arm64-v8a/libfrida-gadget-16.1.3-android-arm64.so 
 
 How to know device architecture?
