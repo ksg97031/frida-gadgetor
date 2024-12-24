@@ -1,6 +1,6 @@
 """frida-gadget version information."""
 __title__ = "frida-gadget"
-__version__ = "1.4.4"
+__version__ = "1.4.5"
 __description__ = "Automated Frida Gadget injection tool"
 __url__ = "https://github.com/ksg97031/frida-gadget"
 __author__ = "ksg97031"
