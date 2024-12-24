@@ -59,16 +59,17 @@ Usage
         Patch an APK with the Frida gadget library
     
       Options:
-        --arch TEXT           Target architecture of the device. (options: arm64, x86_64, arm, x86)
-        --config TEXT         Upload the Frida configuration file.
-        --no-res              Do not decode resources.
-        --main-activity TEXT  Specify the main activity if desired. (e.g., com.example.MainActivity)
-        --sign                Automatically sign the APK using uber-apk-signer.
-        --skip-decompile      Skip decompilation if desired.
-        --skip-recompile      Skip recompilation if desired.
-        --use-aapt2           Use aapt2 instead of aapt.
-        --version             Show version and exit.
-        --help                Show this message and exit.
+        --arch TEXT                Target architecture of the device. (options: arm64, x86_64, arm, x86)
+        --config TEXT              Upload the Frida configuration file.
+        --custom-gadget-name TEXT  Custom name for the Frida gadget.
+        --no-res                   Do not decode resources.
+        --main-activity TEXT       Specify the main activity if desired. (e.g., com.example.MainActivity)
+        --sign                     Automatically sign the APK using uber-apk-signer.
+        --skip-decompile           Skip decompilation if desired.
+        --skip-recompile           Skip recompilation if desired.
+        --use-aapt2                Use aapt2 instead of aapt.
+        --version                  Show version and exit.
+        --help                     Show this message and exit.
 
 How do I begin?
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -77,9 +78,10 @@ How do I begin?
 
 .. code:: sh
 
-    $ frida-gadget handtrackinggpu.apk --arch arm64 --sign
+    $ frida-gadget handtrackinggpu.apk --sign
       [INFO] Auto-detected frida version: 16.1.3
       [INFO] APK: '[REDACTED]\demo-apk\handtrackinggpu.apk'
+      [INFO] Auto-detected architecture via ADB: arm64-v8a # Alternatively, specify the architecture with --arch arm64
       [INFO] Gadget Architecture(--arch): arm64(default)
       [DEBUG] Decompiling the target APK using apktool
       [DEBUG] Downloading the frida gadget library for arm64

@@ -290,6 +290,42 @@ def sign_apk(apk_path:str):
         return True
 
 
+def detect_adb_arch():
+    """Detect the architecture of the currently connected device via ADB.
+
+    This function communicates with a connected Android device over ADB
+    to determine its CPU architecture (e.g., arm64-v8a, armeabi-v7a, x86).
+
+    Returns:
+        str: The detected architecture of the connected device.
+              Defaults to 'arm64' if detection fails.
+    """
+    pipe = subprocess.PIPE
+    cmd = ['adb', 'shell', 'getprop', 'ro.product.cpu.abi']
+    default_arch = "arm64"
+
+    try:
+        with subprocess.Popen(cmd, stdin=pipe, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                logger.warning("Failed to execute ADB command. Error: %s", stderr.decode().strip())
+                logger.warning("Falling back to default architecture: %s", default_arch)
+                return default_arch
+
+            arch = stdout.decode().strip()
+            if not arch:
+                logger.warning("Architecture detection failed: no output received. Falling back to default: %s", default_arch)
+                return default_arch
+
+            logger.info("Auto-detected architecture via ADB: %s", arch)
+            return arch
+
+    except FileNotFoundError:
+        logger.warning("ADB is not installed or not found in the system PATH. Falling back to default: %s", default_arch)
+        return default_arch
+    except Exception as e:
+        logger.warning("An unexpected error occurred during architecture detection: %s. Falling back to default: %s", str(e), default_arch)
+        return default_arch
 
 def print_version(ctx, _, value):
     """Print version and exit"""
@@ -300,7 +336,7 @@ def print_version(ctx, _, value):
 
 # pylint: disable=too-many-arguments
 @click.command()
-@click.option('--arch', default="arm64", help="Target architecture of the device. (options: arm64, x86_64, arm, x86)")
+@click.option('--arch', default=None, help="Target architecture of the device. (options: arm64, x86_64, arm, x86)")
 @click.option('--config', help="Upload the Frida configuration file.")
 @click.option('--custom-gadget-name', default=None, help="Custom name for the Frida gadget.")
 @click.option('--no-res', is_flag=True, help="Do not decode resources.")
@@ -318,13 +354,16 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
     apk_path = Path(apk_path)
 
     logger.info("APK: '%s'", apk_path)
-    logger.info("Gadget Architecture(--arch): %s%s", arch, "(default)" if arch == "arm64" else "")
+    if arch is None:
+        arch = detect_adb_arch()
 
-    arch = arch.lower()
     if arch == 'arm64-v8a':
         arch = 'arm64'
     elif arch == 'armeabi-v7a':
         arch = 'arm'
+    logger.info("Gadget Architecture(--arch): %s%s", arch, "(default)" if arch == "arm64" else "")
+
+    arch = arch.lower()
     supported_archs = ['arm', 'arm64', 'x86', 'x86_64']
     if arch not in supported_archs:
         logger.error(
