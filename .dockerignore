@@ -9,3 +9,5 @@ tests
 pypi.sh
 .env
 dist
+scripts/files/*
+**/__pycache__/
