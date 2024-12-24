@@ -4,3 +4,8 @@ images
 CONTRIBUTORS.svg
 *.apk
 .vscode
+frida_gadget.egg-info
+tests
+pypi.sh
+.env
+dist
