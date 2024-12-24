@@ -189,7 +189,7 @@ def modify_manifest(decompiled_path):
                             ':extractNativeLibs="true"')
     android_manifest.write_text(txt, encoding="utf-8")
 
-def inject_gadget_into_apk(apk_path:str, arch:str, decompiled_path:str, no_res, main_activity:str = None, config:str = None):
+def inject_gadget_into_apk(apk_path:str, arch:str, decompiled_path:str, no_res, main_activity:str = None, config:str = None, custom_gadget_name:str = None):
     """Inject frida gadget into an APK
 
     Args:
@@ -204,6 +204,15 @@ def inject_gadget_into_apk(apk_path:str, arch:str, decompiled_path:str, no_res, 
     apk = APK(apk_path)
     gadget_path = download_gadget(arch) # Download gadget library
     gadget_name = Path(gadget_path).name
+
+    # Apply custom gadget name if provided
+    if custom_gadget_name:
+        if not custom_gadget_name.startswith("lib"):
+            custom_gadget_name = f"lib{custom_gadget_name}"
+        custom_gadget_name += ".so"
+        logger.info("Using custom gadget name: %s", custom_gadget_name)
+        gadget_name = custom_gadget_name
+
     if not main_activity:
         main_activity = apk.get_main_activity()
 
@@ -293,6 +302,7 @@ def print_version(ctx, _, value):
 @click.command()
 @click.option('--arch', default="arm64", help="Target architecture of the device. (options: arm64, x86_64, arm, x86)")
 @click.option('--config', help="Upload the Frida configuration file.")
+@click.option('--custom-gadget-name', default=None, help="Custom name for the Frida gadget.")
 @click.option('--no-res', is_flag=True, help="Do not decode resources.")
 @click.option('--main-activity', default=None, help="Specify the main activity if desired.")
 @click.option('--sign', is_flag=True, help="Automatically sign the APK using uber-apk-signer.")
@@ -303,7 +313,7 @@ def print_version(ctx, _, value):
               expose_value=False, is_eager=True, help="Show version and exit.")
 @click.argument('apk_path', type=click.Path(exists=True), required=True)
 def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
-        sign:bool, skip_decompile:bool, skip_recompile:bool, use_aapt2:bool):
+        sign:bool, custom_gadget_name:str, skip_decompile:bool, skip_recompile:bool, use_aapt2:bool):
     """Patch an APK with the Frida gadget library"""
     apk_path = Path(apk_path)
 
@@ -311,6 +321,10 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
     logger.info("Gadget Architecture(--arch): %s%s", arch, "(default)" if arch == "arm64" else "")
 
     arch = arch.lower()
+    if arch == 'arm64-v8a':
+        arch = 'arm64'
+    elif arch == 'armeabi-v7a':
+        arch = 'arm'
     supported_archs = ['arm', 'arm64', 'x86', 'x86_64']
     if arch not in supported_archs:
         logger.error(
@@ -338,7 +352,7 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
             sys.exit(-1)
 
     # Process if decompile is success
-    inject_gadget_into_apk(apk_path, arch, decompiled_path, no_res, main_activity, config)
+    inject_gadget_into_apk(apk_path, arch, decompiled_path, no_res, main_activity, config, custom_gadget_name)
 
     # Rebuild with apktool, print apk_path if process is success
     if not skip_recompile:
