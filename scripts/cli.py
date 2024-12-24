@@ -372,8 +372,13 @@ def run(apk_path: str, arch: str, config: str, no_res:bool, main_activity: str,
         if sign:
             logger.debug('Starting APK signing using uber-apk-signer')
             sign_apk(str(apk_path))
+            return
 
     logger.info(apk_path)
+    logger.warning(
+        "The APK is not signed. Use the --sign option to sign it automatically, "
+        "or sign the APK manually before installing it."
+    )
 
 
 if __name__ == '__main__':
