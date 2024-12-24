@@ -66,7 +66,7 @@ def download_gadget(arch: str):
     Args:
         arch (str): architecture of the device
     """
-    logger.debug("Auto-detected your frida version: %s", INSTALLED_FRIDA_VERSION)
+    logger.info("Auto-detected your frida version: %s", INSTALLED_FRIDA_VERSION)
     frida_github = FridaGithub(INSTALLED_FRIDA_VERSION)
     assets = frida_github.get_assets()
     file = f'frida-gadget-{INSTALLED_FRIDA_VERSION}-android-{arch}.so.xz'
