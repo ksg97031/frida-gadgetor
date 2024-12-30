@@ -4,8 +4,8 @@ frida-gadget
 |Codacy-Grade| |Docker| |LICENCE|
 
 
-| ``frida-gadget`` is a tool that can be used to patch APKs in order to utilize the `Frida Gadget <https://frida.re/docs/gadget/>`_.
-| This tool automates the process of downloading the Frida gadget library and injecting the loadlibrary code into the main activity.
+| ``frida-gadget`` is a tool for patching Android applications to integrate the `Frida Gadget <https://frida.re/docs/gadget/>`_.
+| This tool automates the process of downloading the Frida gadget library and injecting the ``loadLibrary`` code into the main activity.
 
 
 Installation
@@ -31,7 +31,7 @@ Prerequirement
    # Add Apktool to your PATH environment variable
    export PATH=$PATH:$HOME/.brew/bin 
 
-| For other operating systems, you can refer to the `Install Guide <https://ibotpeaches.github.io/Apktool/install/>`_.
+| For other operating systems, such as `Windows`, you can refer to the `Install Guide <https://ibotpeaches.github.io/Apktool/install/>`_.
 
 Docker
 ~~~~~~~
@@ -98,6 +98,18 @@ How do I begin?
       [INFO] Success
       ...
       
+
+How to Identify?
+~~~~~~~~~~~~~~~~~~
+| Observe the main activity; the injected `loadLibrary` code will be visible.
+
+.. image:: https://github.com/ksg97031/frida-gadget/blob/trunk/images/decompile.png
+   :width: 600
+
+| Furthermore, the Frida gadget library has been injected into your APK.
+
+.. code:: sh
+
     $ unzip -l [REDACTED]/demo-apk/handtrackinggpu/dist/handtrackinggpu.apk | grep libfrida-gadget
       21133848  09-15-2021 02:28   lib/arm64-v8a/libfrida-gadget-16.1.3-android-arm64.so 
 
@@ -116,21 +128,6 @@ How to know device architecture?
 | - Newer high-end devices typically use ``arm64-v8a``.
 | - Older or lower-end devices might use ``armeabi-v7a``.
 | - Some specific emulators or devices may still use ``x86``.
-
-How to Identify?
-~~~~~~~~~~~~~~~~~~
-| Observe the main activity; the injected loadLibrary code will be visible.
-|
-
-.. image:: https://github.com/ksg97031/frida-gadget/blob/trunk/images/decompile.png
-   :width: 600
-
-Resigning the APK
-~~~~~~~~~~~~~~~~~~
-| After modifying the APK, you need to re-sign it.
-| You can quickly re-sign your application with the ``--sign`` option.
-| This option uses `uber-apk-signer <https://github.com/patrickfav/uber-apk-signer>`_.
-|
 
 Contributing
 -----------------
