@@ -20,7 +20,7 @@ Installation
 Prerequirement
 ----------------
 
-| You should install Apktool and add it to your PATH environment variable.
+| You should install ``apktool`` and add it to your ``PATH`` environment variable.
 |   
 
 .. code:: sh
@@ -31,22 +31,7 @@ Prerequirement
    # Add Apktool to your PATH environment variable
    export PATH=$PATH:$HOME/.brew/bin 
 
-| For other operating systems, such as `Windows`, you can refer to the `Install Guide <https://ibotpeaches.github.io/Apktool/install/>`_.
-
-Docker
-~~~~~~~
-| The ``-v`` flag is used to bind mount the current directory to the ``/workspace/mount`` directory inside the container. 
-| Ensure that your ``APK`` file is located in the current directory, or replace ``$APK_DIRECTORY`` with the path to the directory where the APK file is stored.
-|
-
-.. code:: sh
-
-    APK_DIRECTORY=$PWD
-    APK_FILENAME=example.apk
-    docker run -v $APK_DIRECTORY/:/workspace/mount ksg97031/frida-gadget mount/$APK_FILENAME --arch arm64 --sign
-
-    ...
-    # New apk is in the $APK_DIRECTORY/example/dist/example.apk
+| For other operating systems, such as ``Windows``, you can refer to the `Install Guide <https://ibotpeaches.github.io/Apktool/install/>`_.
 
 Usage
 ------------
@@ -112,6 +97,21 @@ How to Identify?
 
     $ unzip -l [REDACTED]/demo-apk/handtrackinggpu/dist/handtrackinggpu.apk | grep libfrida-gadget
       21133848  09-15-2021 02:28   lib/arm64-v8a/libfrida-gadget-16.1.3-android-arm64.so 
+
+With Docker
+~~~~~~~
+| Use the ``-v`` flag to bind the current directory to the ``/workspace/mount`` directory inside the Docker container.  
+| Ensure that your APK file is in the current directory, or replace ``$APK_DIRECTORY`` with the path to your APK file's location.
+|
+
+.. code:: sh
+
+    APK_DIRECTORY=$PWD
+    APK_FILENAME=example.apk
+    docker run -v $APK_DIRECTORY/:/workspace/mount ksg97031/frida-gadget mount/$APK_FILENAME --arch arm64 --sign
+
+    ...
+    # The patched APK will be located at $APK_DIRECTORY/example/dist/example.apk
 
 How to know device architecture?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
